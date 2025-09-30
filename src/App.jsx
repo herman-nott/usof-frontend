@@ -1,33 +1,39 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import Navigation from './components/Navigation/Navigation'
+import ParticleBackground from './components/ParticleBackground/ParticleBackground'
+import Login from './components/Login/Login'
+import Register from './components/Register/Register'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [route, setRoute] = useState('login');
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  function onRouteChange(route) {
+    if (route === 'logout') {
+      setIsSignedIn(false);
+    } else if (route === 'home') {
+      setIsSignedIn(true);
+    }
+    setRoute(route);
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <ParticleBackground />
+      <Navigation onRouteChange={onRouteChange} isSignedIn={isSignedIn} />
+      
+      {
+        route === 'home'
+          ? <div>
+              <h1>Welcome</h1>
+            </div>
+          : (
+              route === 'register' 
+                ? <Register onRouteChange={onRouteChange} />
+                : <Login onRouteChange={onRouteChange} />
+            )
+      }
     </>
   )
 }
