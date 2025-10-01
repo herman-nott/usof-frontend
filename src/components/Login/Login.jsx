@@ -54,7 +54,7 @@ function Login({ onRouteChange }) {
                             <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Log In" onClick={onSubmitLogIn} />
                         </div>
                         <div className="lh-copy mt3">
-                            <p className="f6 link dim black db pointer">Register</p>
+                            <p className="f6 link dim black db pointer" onClick={() => onRouteChange('register')}>Register</p>
                         </div>
                     </div>
                 </main>
