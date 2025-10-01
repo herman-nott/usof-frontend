@@ -61,7 +61,7 @@ function Login({ onRouteChange }) {
             </article>
 
             {error && (
-                <p style={{ color: 'red', fontWeight: 'bold' }}>
+                <p style={{ color: 'red', fontWeight: 'bold' }}> 
                     &#10006; {error}
                 </p>
             )}
