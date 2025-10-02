@@ -43,11 +43,25 @@ function Login({ onRouteChange }) {
                             <legend className="f1 fw6 ph0 mh0">Log In</legend>
                             <div className="mt3">
                                 <label className="db fw6 lh-copy f6" htmlFor="email-or-login">Email or Login</label>
-                                <input className="pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100" type="text" name="login" id="login" required onChange={onEmailOrLoginChange} />
+                                <input 
+                                    className="pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100" 
+                                    type="text" 
+                                    name="login" 
+                                    id="login" 
+                                    required 
+                                    onChange={onEmailOrLoginChange} 
+                                />
                             </div>
                             <div className="mv3">
                                 <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-                                <input className="b pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100" type="password" name="password" id="password" required onChange={onPasswordChange} />
+                                <input 
+                                    className="b pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100" 
+                                    type="password" 
+                                    name="password" 
+                                    id="password" 
+                                    required 
+                                    onChange={onPasswordChange} 
+                                />
                             </div>
                         </fieldset>
                         <div className="">
