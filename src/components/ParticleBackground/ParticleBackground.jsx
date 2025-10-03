@@ -23,11 +23,11 @@ function ParticleBackground() {
                 value: 120,
             },
             color: {
-                value: "#ffffff",
+                value: "#d2d2d2",
             },
             links: {
                 enable: true,
-                color: "#ffffff",
+                color: "#d2d2d2",
                 distance: 150,
                 opacity: 0.4,
                 width: 2,

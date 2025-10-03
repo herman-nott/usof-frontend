@@ -1,0 +1,10 @@
+.input-square {
+    outline: none;
+    border: 1px  solid #d9dfe4;
+    background-color: #e9edf1;
+    transition: box-shadow 0.2s ease;
+}
+
+.input-square:focus {
+    box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.2);
+}

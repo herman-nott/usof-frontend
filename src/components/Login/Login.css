@@ -1,0 +1,22 @@
+.forms-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.forms-wrapper {
+    display: flex;
+    width: 200%;
+    transition: transform 0.6s ease-in-out;
+    align-items: flex-start
+}
+
+.login-form, .reset-form {
+    width: 50%;
+    flex-shrink: 0;
+}
+
+.forms-wrapper.resetting {
+    transform: translateX(-50%);
+}
