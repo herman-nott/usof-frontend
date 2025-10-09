@@ -31,24 +31,24 @@ function PostDetail({ postId, onRouteChange, isSignedIn }) {
 
                 const likeRes = await fetch(`${import.meta.env.VITE_API_URL}/posts/${data.id}/like`);
                 const likeData = await likeRes.json();
+                const likesArr = likeData.likes || [];
 
-                console.log(likeData);
-                
+                const likes_count = likesArr.filter(l => l.type === 'like').length;
+                const dislikes_count = likesArr.filter(l => l.type === 'dislike').length;
+                const rating = likes_count - dislikes_count;
 
-                // const likes_count = likeData.likes || 0;
-                // const dislikes_count = likeData.dislikes || 0;
-                // const rating = likeData.rating || (likes - dislikes);
+                const fullPost = {
+                    ...data,
+                    categories: catData.categories || [],
+                    commentsCount,
+                    likes_count,
+                    dislikes_count,
+                    rating,
+                };
 
-                // const fullPost = {
-                //     ...data,
-                //     categories: catData.categories || [],
-                //     commentsCount,
-                //     likes_count,
-                //     dislikes_count,
-                //     rating,
-                // };
+                console.log(fullPost);
                     
-                // if (!cancelled) setPost(fullPost);
+                if (!cancelled) setPost(fullPost);
             } catch (err) {
                 if (!cancelled) setError(err.message);
             } finally {
