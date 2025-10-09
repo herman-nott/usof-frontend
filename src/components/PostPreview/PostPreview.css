@@ -1,0 +1,51 @@
+.custom-hover:hover {
+    background-color: #f6f8f9;
+}
+
+.post-list > * {
+    border-bottom: 1px solid #ddd;
+    padding: 2rem 0;
+    margin: 0 3rem;
+}
+
+.post-list > *:first-child {
+    border-top: 1px solid #ddd;
+}
+
+.post-preview {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-avatar {
+    width: 30px;
+    height: 30px;
+    object-fit: 'cover';
+    margin-left: 0;
+}
+
+.post-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.post-author {
+    margin-left: 0.5rem;
+}
+
+.middle-dot {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.post-time {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.post-excerpt {
+    font-size: 0.9rem;
+}

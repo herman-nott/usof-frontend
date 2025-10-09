@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import './Login.css'
 
-function Login({ onRouteChange }) {
+function Login({ onRouteChange, onLoginSuccess }) {
     const [logInEmailorUsername, setLogInEmailorUsername] = useState('');
     const [logInPassword, setLogInPassword] = useState('');
     const [error, setError] = useState(false);
@@ -35,6 +35,7 @@ function Login({ onRouteChange }) {
         .then(user => {
             if (user.id) {
                 setError('');
+                onLoginSuccess(user.id);
                 onRouteChange('home');
             } else {
                 setError('Incorrect login or email or password');

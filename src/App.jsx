@@ -1,16 +1,25 @@
 import { useState, useEffect } from 'react'
-import Navigation from './components/Navigation/Navigation'
 import ParticleBackground from './components/ParticleBackground/ParticleBackground'
 import Login from './components/Login/Login'
 import Register from './components/Register/Register'
 import VerifyEmail from './components/VerifyEmail/VerifyEmail'
 import PasswordReset from './components/PasswordReset/PasswordReset'
+
+import Navigation from './components/Navigation/Navigation'
+import LeftSidebar from './components/LeftSidebar/LeftSidebar'
+import RightSidebar from './components/RightSidebar/RightSidebar'
+import Content from './components/Content/Content'
+import PostDetail from './components/PostDetail/PostDetail'
+
+import BodyClassController from './components/BodyClassController/BodyClassController'
+
 import './App.css'
 
 function App() {
-  const [route, setRoute] = useState('login');
+  const [route, setRoute] = useState('home');
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [passwordResetToken, setPasswordResetToken] = useState('');
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -19,30 +28,64 @@ function App() {
       setPasswordResetToken(token);
       setRoute("password-reset");
     }
+
+    if (path.startsWith("/posts/")) {
+      const id = path.split("/")[2];
+      if (id) setRoute(`post:${id}`);
+    }
   }, []);
+
+  function onLoginSuccess(userId) {
+    setIsSignedIn(true);
+    setUserId(userId);
+  }
 
   function onRouteChange(route) {
     if (route === 'logout') {
       setIsSignedIn(false);
-    } else if (route === 'home') {
-      setIsSignedIn(true);
-    } 
+    }
     setRoute(route);
   }
 
+  const authRoutes = ['login', 'register', 'verify-email', 'password-reset'];
+
+  const showParticle = authRoutes.includes(route);
+
   const routes = { 
-    home: <h1>Welcome</h1>, 
-    login: <Login onRouteChange={onRouteChange} />, 
-    register: <Register onRouteChange={onRouteChange} />, 
+    home: <Content onRouteChange={onRouteChange} />, 
+    login: <Login onRouteChange={onRouteChange} onLoginSuccess={onLoginSuccess} />, 
+    register: <Register onRouteChange={onRouteChange} onLoginSuccess={onLoginSuccess} />, 
     'verify-email': <VerifyEmail onRouteChange={onRouteChange} />, 
     'password-reset': <PasswordReset token={passwordResetToken} />
   };
 
+  let mainContent;
+  if (route.startsWith('post:')) {
+    const postId = route.split(':')[1];
+    mainContent = <PostDetail postId={postId} onRouteChange={onRouteChange} isSignedIn={isSignedIn} userId={userId} />;
+  } else {
+    mainContent = routes[route] || routes.home;
+  }
+
   return (
     <>
-      <ParticleBackground />
-      <Navigation onRouteChange={onRouteChange} isSignedIn={isSignedIn} />
-      {routes[route] || routes.login}
+      {showParticle && <ParticleBackground />}
+      <BodyClassController route={route} />
+
+      <Navigation onRouteChange={onRouteChange} isSignedIn={isSignedIn} route={route} userId={userId} />
+
+      <div className="main-content" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+        {!authRoutes.includes(route) && (
+          <>
+            <LeftSidebar onRouteChange={onRouteChange} />
+            <RightSidebar onRouteChange={onRouteChange} />
+          </>
+        )}
+        <div style={{ flex: 1 }}>
+          {/* {routes[route] || routes.home} */}
+          {mainContent}
+        </div>
+      </div>
     </>
   )
 }

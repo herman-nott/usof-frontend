@@ -20,3 +20,7 @@
 .forms-wrapper.resetting {
     transform: translateX(-50%);
 }
+
+.login-container {
+    margin-top: 6rem;
+}

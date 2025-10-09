@@ -75,7 +75,7 @@ function Register({ onRouteChange }) {
     }
 
     return (
-        <div className='center-container'>
+        <div className='center-container mt6'>
             <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-35-l mw6 center shadow-5 blur-card">
                 <main className="pa4 black-80">
                     <div className="measure">
