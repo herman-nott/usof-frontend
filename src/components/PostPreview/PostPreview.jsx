@@ -57,7 +57,7 @@ function PostPreview({ post, onOpen }) {
     }
 
     const createdAt = formatTime(post.created_at);
-    const avatar = author?.avatar_url || 'http://localhost:3000/uploads/avatars/default.png';
+    const avatar = `http://localhost:3000/${author?.profile_picture}`;
     const username = `@${author?.login}`;
 
     const likes = post.likes_count || 0;    

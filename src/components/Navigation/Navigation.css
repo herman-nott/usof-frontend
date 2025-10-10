@@ -1,0 +1,13 @@
+.create-post-btn {
+    margin-right: 1.2rem;
+    margin-left: 1.2rem;
+}
+
+.btn-container {
+    display: flex;
+    align-items: center;
+}
+
+.create-post-plus {
+    margin-right: 0.5rem;
+}

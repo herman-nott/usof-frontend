@@ -62,7 +62,7 @@ function Content({ onRouteChange }) {
             className="bg-white"
             style={{
                 paddingTop: '6rem',
-                paddingBottom: '6rem',
+                paddingBottom: '2rem',
                 marginLeft: '20%',
                 marginRight: '25%',
                 minHeight: '100vh',
@@ -85,13 +85,64 @@ function Content({ onRouteChange }) {
                 ))}
             </div>
 
-            {!loading && !error && visible.length > 0 && (
+            {/* {!loading && !error && visible.length > 0 && (
                 <div style={{ marginTop: '1rem' }}>
                     <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>Назад</button>
                     <span style={{ margin: '0 0.5rem' }}>Стр. {page} из {totalPages}</span>
                     <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>Вперёд</button>
                 </div>
+            )} */}
+
+            {!loading && !error && visible.length > 0 && (
+                <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
+                    <button
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        style={{
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '50%',
+                            border: '1px solid #ccc',
+                            backgroundColor: '#fff',
+                            cursor: page === 1 ? 'not-allowed' : 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            transition: 'background 0.2s',
+                        }}
+                        onMouseEnter={e => { if(page !== 1) e.currentTarget.style.backgroundColor = '#f0f0f0'; }}
+                        onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#fff'; }}
+                    >
+                        <i className="fa-solid fa-chevron-left"></i>
+                    </button>
+
+                    <span style={{ fontSize: '0.9rem', minWidth: '80px', textAlign: 'center' }}>
+                        Page {page} of {totalPages}
+                    </span>
+
+                    <button
+                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
+                        style={{
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '50%',
+                            border: '1px solid #ccc',
+                            backgroundColor: '#fff',
+                            cursor: page === totalPages ? 'not-allowed' : 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            transition: 'background 0.2s',
+                        }}
+                        onMouseEnter={e => { if(page !== totalPages) e.currentTarget.style.backgroundColor = '#f0f0f0'; }}
+                        onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#fff'; }}
+                    >
+                        <i className="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
             )}
+
         </div>
     );
 }

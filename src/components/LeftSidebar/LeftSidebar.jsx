@@ -32,23 +32,23 @@ function LeftSidebar({ onRouteChange }) {
                 </li> */}
                 <li 
                     className="mb2 pointer custom-hover pa2 tl ml4 mr4" 
-                    onClick={() => onRouteChange('all-posts')}
+                    onClick={() => onRouteChange('all-categories')}
                 >
-                    <i className="fa-solid fa-newspaper mr2"></i>
-                    All Posts
+                    <i className="fa-solid fa-tags mr2"></i>
+                    All Categories
                 </li>
                 <li 
                     className="mb2 pointer custom-hover pa2 tl ml4 mr4" 
                     onClick={() => onRouteChange('popular-posts')}
                 >
-                    <i className="fa-solid fa-star mr2"></i>
+                    <i className="fa-solid fa-fire mr2"></i>
                     Popular Posts
                 </li>
             </ul>
 
             <hr className="w-90 center mt2 mb2" style={{ borderColor: '#ffffff' }} />
 
-            <CategoriesDropdown categories={categories} />
+            {/* <CategoriesDropdown categories={categories} /> */}
         </div>
     );
 }

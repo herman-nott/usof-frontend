@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import './Navigation.css'
 
 function Navigation({ onRouteChange, isSignedIn, route, userId }) {
     const [searchBar, setSearchBar] = useState('');
@@ -10,7 +11,7 @@ function Navigation({ onRouteChange, isSignedIn, route, userId }) {
                 credentials: "include",
             })
                 .then(res => res.json())
-                .then(data => {setUser(data); console.log(data)})
+                .then(data => {setUser(data)})
                 .catch(err => console.error("Error fetching user:", err));
         } else {
             setUser(null);
@@ -52,7 +53,8 @@ function Navigation({ onRouteChange, isSignedIn, route, userId }) {
                 style={{
                     fontSize: '1.5rem',
                     fontWeight: 'bold',
-                    color: '#333'
+                    color: '#333',
+                    marginRight: '2rem'
                 }}
             >
                 usof
@@ -78,6 +80,16 @@ function Navigation({ onRouteChange, isSignedIn, route, userId }) {
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 {isSignedIn ? (
                     <>
+                        <button
+                            className="create-post-btn b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
+                            type="submit"
+                            onClick={() => onRouteChange('create-post')}
+                        >
+                            <div className="btn-container">
+                                <i className="create-post-plus fa-solid fa-plus"></i>
+                                <span>Create</span>
+                            </div>
+                        </button>
                         <p className="f3 link dim black underline pa3 pointer ma0" onClick={() => onRouteChange('logout')}>Log Out</p>
                         <img
                             className="br-100 shadow-1 ml3 mr3 pointer"

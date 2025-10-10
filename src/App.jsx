@@ -13,6 +13,8 @@ import PostDetail from './components/PostDetail/PostDetail'
 
 import BodyClassController from './components/BodyClassController/BodyClassController'
 
+import CreatePost from './components/CreatePost/CreatePost'
+
 import './App.css'
 
 function App() {
@@ -56,7 +58,8 @@ function App() {
     login: <Login onRouteChange={onRouteChange} onLoginSuccess={onLoginSuccess} />, 
     register: <Register onRouteChange={onRouteChange} onLoginSuccess={onLoginSuccess} />, 
     'verify-email': <VerifyEmail onRouteChange={onRouteChange} />, 
-    'password-reset': <PasswordReset token={passwordResetToken} />
+    'password-reset': <PasswordReset token={passwordResetToken} />,
+    'create-post': <CreatePost onRouteChange={onRouteChange} userId={userId} />
   };
 
   let mainContent;
