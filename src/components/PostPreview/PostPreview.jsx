@@ -111,22 +111,22 @@ function PostPreview({ post, onOpen }) {
                     color: '#666'
                 }}
             >
-                <div className="stat-item" title="Лайки">
+                <div className="stat-item" title="Likes">
                     <i className="fa-solid fa-thumbs-up" style={{ color: '#28a745', marginRight: '.3rem' }}></i>
                     {likes}
                 </div>
 
-                <div className="stat-item" title="Дизлайки">
+                <div className="stat-item" title="Dislikes">
                     <i className="fa-solid fa-thumbs-down" style={{ color: '#dc3545', marginRight: '.3rem' }}></i>
                     {dislikes}
                 </div>
 
-                <div className="stat-item" title="Рейтинг">
+                <div className="stat-item" title="Rating">
                     <i className="fa-solid fa-star" style={{ color: '#f5c518', marginRight: '.3rem' }}></i>
                     {rating}
                 </div>
 
-                <div className="stat-item" title="Комментарии">
+                <div className="stat-item" title="Comments">
                     <i className="fa-solid fa-comment" style={{ color: '#007bff', marginRight: '.3rem' }}></i>
                     {commentsCount}
                 </div>

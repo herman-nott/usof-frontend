@@ -18,6 +18,9 @@ function Content({ onRouteChange }) {
                 if (!res.ok) throw new Error('Error loading posts: ' + res.status);
                 const data = await res.json();
 
+                console.log(data);
+                
+
                 const items = Array.isArray(data) ? data : (data.posts || []);
 
                 const postsWithCategories = await Promise.all(items.map(async post => {
