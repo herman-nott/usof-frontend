@@ -11,10 +11,6 @@ function Profile({ userId, currentUserId, onRouteChange }) {
     const isOwnProfile = userId === currentUserId;
 
     useEffect(() => {
-        console.log("Profile loaded for userId:", userId);
-    }, [userId]);
-
-    useEffect(() => {
         if (!userId) return;
 
         const fetchProfileAndPosts = async () => {
@@ -24,6 +20,9 @@ function Profile({ userId, currentUserId, onRouteChange }) {
                 const userData = await userRes.json();
                 setUser(userData);
                 setLoading(false);
+
+                console.log(userData);
+                
 
                 const postsRes = await fetch(`${import.meta.env.VITE_API_URL}/posts`, { credentials: "include" });
                 if (!postsRes.ok) throw new Error("Error loading posts");
@@ -69,9 +68,119 @@ function Profile({ userId, currentUserId, onRouteChange }) {
         onRouteChange(`post:${id}`);
     }
 
-    if (loading) return <div className="tc mt5 f4">Loading profile...</div>;
-    if (error) return <div className="tc mt5 red">Error: {error}</div>;
-    if (!user) return <div className="tc mt5">User not found</div>;
+    if (loading) {
+        return (
+            <div className="tc mt5 f4 messages">
+                <div 
+                    className="flex"
+                    style={{ 
+                        gap: '1rem',
+                        marginRight: '2rem'
+                    }}
+                >
+                    {/* Кнопка "назад" */}
+                    <div 
+                        className="pointer flex items-center justify-center"
+                        style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            backgroundColor: '#f0f0f0',
+                            transition: 'background 0.2s',
+                            marginRight: '1.5rem',
+                            marginLeft: '1rem',
+                        }}
+                        onClick={() => { 
+                            window.history.pushState({}, '', '/'); 
+                            onRouteChange('home'); 
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.backgroundColor = '#e0e0e0'}
+                        onMouseLeave={e => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+                    >
+                        <i className="fa-solid fa-arrow-left"></i>
+                    </div>
+                </div>
+                
+                Loading profile...
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="tc mt5 f4 messages">
+                <div 
+                    className="flex"
+                    style={{ 
+                        gap: '1rem',
+                        marginRight: '2rem'
+                    }}
+                >
+                    {/* Кнопка "назад" */}
+                    <div 
+                        className="pointer flex items-center justify-center"
+                        style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            backgroundColor: '#f0f0f0',
+                            transition: 'background 0.2s',
+                            marginRight: '1.5rem',
+                            marginLeft: '1rem',
+                        }}
+                        onClick={() => { 
+                            window.history.pushState({}, '', '/'); 
+                            onRouteChange('home'); 
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.backgroundColor = '#e0e0e0'}
+                        onMouseLeave={e => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+                    >
+                        <i className="fa-solid fa-arrow-left"></i>
+                    </div>
+                </div>
+                
+                <div className="red">Error: {error}</div>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return (
+            <div className="tc mt5 f4 messages">
+                <div 
+                    className="flex"
+                    style={{ 
+                        gap: '1rem',
+                        marginRight: '2rem'
+                    }}
+                >
+                    {/* Кнопка "назад" */}
+                    <div 
+                        className="pointer flex items-center justify-center"
+                        style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            backgroundColor: '#f0f0f0',
+                            transition: 'background 0.2s',
+                            marginRight: '1.5rem',
+                            marginLeft: '1rem',
+                        }}
+                        onClick={() => { 
+                            window.history.pushState({}, '', '/'); 
+                            onRouteChange('home'); 
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.backgroundColor = '#e0e0e0'}
+                        onMouseLeave={e => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+                    >
+                        <i className="fa-solid fa-arrow-left"></i>
+                    </div>
+                </div>
+                
+                <div className="red">User not found</div>
+            </div>
+        );
+    }
 
     const avatar = user.profile_picture
         ? `http://localhost:3000/${user.profile_picture}`
@@ -122,15 +231,29 @@ function Profile({ userId, currentUserId, onRouteChange }) {
                     <div className="flex flex-column">
                         <div className="flex flex-row items-center">
                             {/* Левая часть — аватар */}
-                            <div className="mr4 tc">
-                            <img
-                                src={avatar}
-                                alt="Avatar"
-                                className="br-100 shadow-1"
-                                width={150}
-                                height={150}
-                                style={{ objectFit: "cover" }}
-                            />
+                            <div className="mr4 tc" style={{ position: 'relative' }}>
+                                <img
+                                    src={avatar}
+                                    alt="Avatar"
+                                    className="br-100 shadow-1"
+                                    width={150}
+                                    height={150}
+                                    style={{ objectFit: "cover" }}
+                                />
+                                {user.role === 'admin' && (
+                                    <i
+                                        className="fa-solid fa-crown"
+                                        style={{
+                                            position: 'absolute',
+                                            top: '-14px',
+                                            right: '7px',
+                                            color: 'gold',
+                                            transform: 'rotate(35deg)',
+                                            fontSize: '2rem',
+                                            textShadow: '0 0 2px #000',
+                                        }}
+                                    ></i>
+                                )}
                             </div>
 
                             {/* Правая часть — информация */}

@@ -1,5 +1,6 @@
 import{ useEffect, useState } from 'react';
 import './PostDetail.css'
+import CommentsSection from '../CommentsSection/CommentsSection'
 
 function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
     const [post, setPost] = useState(null);
@@ -7,16 +8,7 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
     const [error, setError] = useState(null);
     const [author, setAuthor] = useState(null);
 
-    const [comments, setComments] = useState([]);
-    const [loadingComments, setLoadingComments] = useState(false);
-    const [commentText, setCommentText] = useState('');
-    const [submitting, setSubmitting] = useState(false);
-
     const [userLikeType, setUserLikeType] = useState(null);
-
-    function onCommentTextChange(event) {
-        setCommentText(event.target.value);
-    }
 
     async function load() {
         setLoading(true);
@@ -91,74 +83,6 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
         return () => { cancelled = true };
     }, [post]);
 
-    useEffect(() => {
-        loadComments();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [postId]);
-
-    async function loadComments() {
-        setLoadingComments(true);
-        try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/posts/${postId}/comments`);
-            if (!res.ok) throw new Error('Comments error: ' + res.status);
-            const data = await res.json();
-            const comments = Array.isArray(data.comments) ? data.comments : [];
-
-            const commentsWithAuthors = await Promise.all(
-                comments.map(async (c) => {
-                    try {
-                        const userRes = await fetch(`${import.meta.env.VITE_API_URL}/users/${c.author_id}`);
-                        if (!userRes.ok) return { ...c, author: null };
-                        const userData = await userRes.json();                        
-
-                        return { ...c, author: userData };
-                    } catch {
-                        return { ...c, author: null };
-                    }
-                })
-            );
-
-            setComments(commentsWithAuthors);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoadingComments(false);
-        }
-    }
-
-    async function handleCommentSubmit(e) {
-        e.preventDefault();
-        if (!commentText.trim()) return;
-        if (!isSignedIn) {
-            // Попросим пользователя залогиниться
-            // onRouteChange('login');
-            return;
-        }
-        setSubmitting(true);
-        try {
-            const res = await fetch(`http://localhost:3000/api/posts/${postId}/comments`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include', // важно, если сервер использует сессии
-                body: JSON.stringify({ content: commentText })
-            });
-            if (res.status === 401) {
-                onRouteChange('login');
-                return;
-            }
-            if (!res.ok) throw new Error('Ошибка при отправке комментария: ' + res.status);
-            setCommentText('');
-            await loadComments();
-        } catch (err) {
-            console.error(err);
-            alert(err.message || 'Ошибка при отправке комментария');
-        } finally {
-            setSubmitting(false);
-        }
-    }
-
     async function handleLike(type) {
         if (!isSignedIn) {
             // onRouteChange('login');
@@ -174,7 +98,7 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
                 });
                 console.log(res);
                 
-                if (!res.ok) throw new Error('Ошибка при удалении лайка');
+                if (!res.ok) throw new Error('Error when deleting a like');
                 setUserLikeType(null);
             } else {
                 // Пользователь ставит новый лайк/дизлайк
@@ -184,7 +108,7 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
                     credentials: 'include',
                     body: JSON.stringify({ type }) // 'like' или 'dislike'
                 });
-                if (!res.ok) throw new Error('Ошибка при отправке лайка');
+                if (!res.ok) throw new Error('Error sending like');
                 setUserLikeType(type);
             }
 
@@ -204,7 +128,7 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
             }));
         } catch (err) {
             console.error(err);
-            alert(err.message || 'Ошибка при изменении лайка');
+            alert(err.message || 'Error when changing like');
         }
     }
 
@@ -247,7 +171,7 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
             className="post-detail bg-white tl" 
             style={{
                 paddingTop: '6rem',
-                paddingBottom: '6rem',
+                paddingBottom: '3rem',
                 marginLeft: '20%',
                 marginRight: '25%',
                 minHeight: '100vh',
@@ -345,7 +269,7 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
                         transition: 'color .2s'
                     }}
                 >
-                    <i className="fa-solid fa-thumbs-up" style={{ color: '#28a745', marginRight: '.3rem', fontSize: '1.3rem' }}></i>
+                    <i className="fa-solid fa-thumbs-up" style={{ marginRight: '.3rem', fontSize: '1.3rem' }}></i>
                     <span style={{ fontSize: '1rem' }}>{likes}</span>
                 </div>
 
@@ -362,7 +286,7 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
                         transition: 'color .2s'
                     }}
                 >
-                    <i className="fa-solid fa-thumbs-down" style={{ color: '#dc3545', marginRight: '.3rem', fontSize: '1.3rem' }}></i>
+                    <i className="fa-solid fa-thumbs-down" style={{ marginRight: '.3rem', fontSize: '1.3rem' }}></i>
                     <span style={{ fontSize: '1rem' }}>{dislikes}</span>
                 </div>
 
@@ -385,102 +309,7 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
                     marginRight: '2rem'
                 }}
             >
-                <h3 style={{ marginBottom: '1rem' }}>Comments</h3>
-
-                <form onSubmit={handleCommentSubmit} style={{display: 'flex', alignItems: 'center', gap: '.5rem'}} >
-                    <textarea
-                        className='outline-0 focus-b--transparent'
-                        value={commentText}
-                        onChange={onCommentTextChange}
-                        rows={2}
-                        placeholder={isSignedIn ? "Write a comment..." : "Login to write a comment"}
-                        style={{
-                            width: '100%',
-                            borderRadius: '5px',
-                            border: '1px solid #ccc',
-                            padding: '.5rem',
-                            resize: 'vertical',
-                            fontFamily: 'inherit'
-                        }}
-                    />
-                    <button
-                        className='b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib'
-                        type="submit"
-                        disabled={submitting || !isSignedIn}
-                        style={{
-                            width: '42px',
-                            height: '42px',
-                            borderRadius: '50%',
-                            cursor: isSignedIn ? 'pointer' : 'not-allowed',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <i className="fa-solid fa-paper-plane" style={{marginRight: '0.1rem'}}></i>
-                    </button>
-                </form>
-
-                {loadingComments && <p>Загрузка комментариев...</p>}
-
-                {!loadingComments && comments.length === 0 && (
-                    <p style={{ color: '#666' }}>No comments yet</p>
-                )}
-
-                
-
-                <div style={{ listStyle: 'none', padding: 0, marginBottom: '1rem', marginTop: '1rem' }}>
-                    {comments.map(c => {
-                        const avatar = `http://localhost:3000/${c.author?.profile_picture || 'default.png'}`;                        
-                        const username = `@${c.author?.login || 'Unknown'}`;
-                        const createdAt = formatTime(c.created_at);
-
-                        return (
-                            <div
-                                key={c.id}
-                                style={{
-                                    marginBottom: '1.2rem',
-                                    padding: '1rem',
-                                    border: '1px solid #eee',
-                                    borderRadius: '10px',
-                                    backgroundColor: '#fafafa',
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-                                }}
-                            >
-                                {/* Верхняя часть — автор */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '.6rem' }}>
-                                    <img
-                                        src={avatar}
-                                        alt={username}
-                                        width={40}
-                                        height={40}
-                                        style={{ borderRadius: '50%', objectFit: 'cover' }}
-                                    />
-                                    <div>
-                                    <div style={{ fontWeight: '600', color: '#333' }}>
-                                        {username}
-                                    </div>
-                                    <div style={{ fontSize: '.8rem', color: '#777', marginTop: '0.2rem' }}>
-                                        {createdAt}
-                                    </div>
-                                    </div>
-                                </div>
-
-                                {/* Текст комментария */}
-                                <div
-                                    style={{
-                                        fontSize: '.95rem',
-                                        color: '#444',
-                                        lineHeight: '1.5',
-                                        paddingLeft: '0.5rem'
-                                    }}
-                                >
-                                    {c.content}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
+                <CommentsSection postId={postId} isSignedIn={isSignedIn} onRouteChange={onRouteChange} userId={userId} />
             </div>
         </div>
     );
