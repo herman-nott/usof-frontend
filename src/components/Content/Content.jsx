@@ -18,7 +18,7 @@ function Content({ onRouteChange }) {
                 if (!res.ok) throw new Error('Error loading posts: ' + res.status);
                 const data = await res.json();
 
-                console.log(data);
+                // console.log(data);
                 
 
                 const items = Array.isArray(data) ? data : (data.posts || []);
@@ -53,7 +53,6 @@ function Content({ onRouteChange }) {
     }, []);    
 
     function openPost(id) {
-        // обновляем адресную строку и маршрут (чтобы можно было делиться ссылкой)
         window.history.pushState({}, '', `/posts/${id}`);
         onRouteChange(`post:${id}`);
     }
@@ -84,17 +83,9 @@ function Content({ onRouteChange }) {
 
             <div className="post-list">
                 {visible.map(post => (
-                    <PostPreview key={post.id} post={post} onOpen={openPost} />
+                    <PostPreview key={post.id} post={post} onOpen={openPost} onRouteChange={onRouteChange} />
                 ))}
             </div>
-
-            {/* {!loading && !error && visible.length > 0 && (
-                <div style={{ marginTop: '1rem' }}>
-                    <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>Назад</button>
-                    <span style={{ margin: '0 0.5rem' }}>Стр. {page} из {totalPages}</span>
-                    <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>Вперёд</button>
-                </div>
-            )} */}
 
             {!loading && !error && visible.length > 0 && (
                 <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>

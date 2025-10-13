@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './PostPreview.css'
 
-function PostPreview({ post, onOpen }) {
+function PostPreview({ post, onOpen, onRouteChange }) {
     const [author, setAuthor] = useState(null);
 
     function stripHtml(html) {
@@ -75,9 +75,9 @@ function PostPreview({ post, onOpen }) {
             }}
         >
             <div className="post-header pointer">
-                <img src={avatar} alt={username} className="post-avatar" />
+                <img src={avatar} alt={username} className="post-avatar" onClick={() => onRouteChange(`profile/${post.author_id}`)} style={{ cursor: 'pointer' }} />
                 <div className="post-meta">
-                    <span className="post-author">{username}</span>
+                    <span className="post-author" onClick={() => onRouteChange(`profile/${post.author_id}`)} style={{ cursor: 'pointer' }}>{username}</span>
                     <span className="middle-dot">&#8226;</span>
                     <span className="post-time">{createdAt}</span>
                 </div>

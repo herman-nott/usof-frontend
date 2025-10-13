@@ -15,6 +15,8 @@ import BodyClassController from './components/BodyClassController/BodyClassContr
 
 import CreatePost from './components/CreatePost/CreatePost'
 
+import Profile from './components/Profile/Profile'
+
 import './App.css'
 
 function App() {
@@ -53,19 +55,30 @@ function App() {
 
   const showParticle = authRoutes.includes(route);
 
+  let routeUserId = null;
+  if (route.startsWith('profile:')) {
+    routeUserId = route.split(':')[1];  // id пользователя из маршрута
+  } else if (route === 'profile') {
+    routeUserId = userId;               // свой профиль
+  }
+
   const routes = { 
     home: <Content onRouteChange={onRouteChange} />, 
     login: <Login onRouteChange={onRouteChange} onLoginSuccess={onLoginSuccess} />, 
     register: <Register onRouteChange={onRouteChange} onLoginSuccess={onLoginSuccess} />, 
     'verify-email': <VerifyEmail onRouteChange={onRouteChange} />, 
     'password-reset': <PasswordReset token={passwordResetToken} />,
-    'create-post': <CreatePost onRouteChange={onRouteChange} userId={userId} />
+    'create-post': <CreatePost onRouteChange={onRouteChange} userId={userId} />,
+    'profile': <Profile userId={routeUserId} currentUserId={userId} onRouteChange={onRouteChange} />
   };
 
   let mainContent;
   if (route.startsWith('post:')) {
     const postId = route.split(':')[1];
     mainContent = <PostDetail postId={postId} onRouteChange={onRouteChange} isSignedIn={isSignedIn} userId={userId} />;
+  } else if (route.startsWith('profile/')) {
+    const routeUserId = route.split('/')[1];
+    mainContent = <Profile userId={routeUserId} currentUserId={userId} onRouteChange={onRouteChange} />
   } else {
     mainContent = routes[route] || routes.home;
   }

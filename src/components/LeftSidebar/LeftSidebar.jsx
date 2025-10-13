@@ -2,9 +2,6 @@ import './LeftSidebar.css'
 import CategoriesDropdown from "../CategoriesDropdown/CategoriesDropdown"
 
 function LeftSidebar({ onRouteChange }) {
-
-    const categories = [1,2,3,4,5]
-
     return (
         <div 
             className="br b--light-gray bg-white w-20 vh-100 fixed left-0 top-0 overflow-auto" 

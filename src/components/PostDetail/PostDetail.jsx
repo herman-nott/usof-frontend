@@ -291,10 +291,11 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
                             width={45}
                             height={45}
                             className="br-100"
-                            style={{ objectFit: 'cover' }}
+                            style={{ objectFit: 'cover', cursor: 'pointer' }}
+                            onClick={() => onRouteChange(`profile/${post.author_id}`)}
                         />
                         <div className='author-info-container'>
-                            <span className="post-author-det">{username}</span>
+                            <span className="post-author-det" onClick={() => onRouteChange(`profile/${post.author_id}`)} style={{ cursor: 'pointer' }}>{username}</span>
                             <span className="middle-dot-det">&#8226;</span>
                             <span className="post-time-det">{createdAt}</span>
                         </div>

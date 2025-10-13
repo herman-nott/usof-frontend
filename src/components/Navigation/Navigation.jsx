@@ -31,7 +31,7 @@ function Navigation({ onRouteChange, isSignedIn, route, userId }) {
     }
 
     function onViewProfileSubmit() {
-        
+        onRouteChange('profile');
     }
 
     if (route === 'login' || route === 'register' || route === 'verify-email' || route === 'password-reset') {
