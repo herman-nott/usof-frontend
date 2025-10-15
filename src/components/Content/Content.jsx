@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import PostPreview from '../PostPreview/PostPreview'
 
-function Content({ onRouteChange }) {
+function Content({ onRouteChange, isSignedIn }) {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -14,20 +14,23 @@ function Content({ onRouteChange }) {
         async function load() {
             setLoading(true);
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/posts`);
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/posts`, {
+                    credentials: 'include',
+                });
                 if (!res.ok) throw new Error('Error loading posts: ' + res.status);
-                const data = await res.json();
-
-                // console.log(data);
-                
+                const data = await res.json();                
 
                 const items = Array.isArray(data) ? data : (data.posts || []);
 
                 const postsWithCategories = await Promise.all(items.map(async post => {
-                    const catRes = await fetch(`${import.meta.env.VITE_API_URL}/posts/${post.id}/categories`);
+                    const catRes = await fetch(`${import.meta.env.VITE_API_URL}/posts/${post.id}/categories`, {
+                        credentials: 'include',
+                    });
                     const catData = await catRes.json();
 
-                    const comRes = await fetch(`${import.meta.env.VITE_API_URL}/posts/${post.id}/comments`);
+                    const comRes = await fetch(`${import.meta.env.VITE_API_URL}/posts/${post.id}/comments`, {
+                        credentials: 'include',
+                    });
                     const comData = await comRes.json();
 
                     const commentsCount = Array.isArray(comData) ? comData.length : (comData.comments?.length || 0);
@@ -50,7 +53,7 @@ function Content({ onRouteChange }) {
         }
         load();
         return () => { cancelled = true; }
-    }, []);    
+    }, [isSignedIn]);    
 
     function openPost(id) {
         window.history.pushState({}, '', `/posts/${id}`);

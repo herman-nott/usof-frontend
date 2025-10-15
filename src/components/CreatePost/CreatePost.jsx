@@ -5,6 +5,7 @@ function CreatePost({ onRouteChange, userId }) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [error, setError] = useState('');
+    const [isActive, setIsActive] = useState(true);
 
     const [categories, setCategories] = useState([]);
     const [categoryInput, setCategotyInput] = useState('');
@@ -78,7 +79,8 @@ function CreatePost({ onRouteChange, userId }) {
                     title, 
                     content, 
                     categories: categories.map(c => c.id), 
-                    user_id: userId 
+                    user_id: userId,
+                    status: isActive ? 'active' : 'inactive'
                 })
             });
 
@@ -251,6 +253,43 @@ function CreatePost({ onRouteChange, userId }) {
                             </div>
                         )}
                     </div>
+
+                    <div className="mb3 flex items-center" style={{ gap: '0.5rem', marginBottom: '1.5rem' }}>
+                        <label htmlFor="active-switch" className="tl" style={{ marginRight: '1rem' }}>
+                            Active status:
+                        </label>
+
+                        <div 
+                            onClick={() => setIsActive(!isActive)}
+                            className="pointer"
+                            style={{
+                                width: '50px',
+                                height: '25px',
+                                backgroundColor: isActive ? '#4caf50' : '#ccc',
+                                borderRadius: '25px',
+                                position: 'relative',
+                                transition: 'background 0.3s',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    width: '21px',
+                                    height: '21px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#fff',
+                                    position: 'absolute',
+                                    top: '2px',
+                                    left: isActive ? '26px' : '2px',
+                                    transition: 'left 0.3s',
+                                }}
+                            ></div>
+                        </div>
+
+                        <span style={{ fontSize: '.9rem', color: isActive ? '#4caf50' : '#777' }}>
+                            {isActive ? 'Active' : 'Inactive'}
+                        </span>
+                    </div>
+
 
                     <div className="tl">
                         <button

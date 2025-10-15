@@ -50,6 +50,9 @@ function App() {
   function onRouteChange(route) {
     if (route === 'logout') {
       setIsSignedIn(false);
+      setUserId(null);
+      // Можно сбросить route на home и, например, обновить посты
+      setRoute('home');
     }
     setRoute(route);
   }
@@ -66,7 +69,7 @@ function App() {
   }
 
   const routes = { 
-    home: <Content onRouteChange={onRouteChange} />, 
+    home: <Content onRouteChange={onRouteChange} isSignedIn={isSignedIn} />, 
     login: <Login onRouteChange={onRouteChange} onLoginSuccess={onLoginSuccess} />, 
     register: <Register onRouteChange={onRouteChange} onLoginSuccess={onLoginSuccess} />, 
     'verify-email': <VerifyEmail onRouteChange={onRouteChange} />, 

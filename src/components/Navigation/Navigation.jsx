@@ -34,6 +34,25 @@ function Navigation({ onRouteChange, isSignedIn, route, userId }) {
         onRouteChange('profile');
     }
 
+    async function logout() {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
+                method: 'POST',
+                credentials: 'include',
+            });
+
+            if (res.ok) {
+                onRouteChange('logout');
+                console.log('kajldskaljaksjd');
+                
+            } else {
+                console.error('Error when logout:', await res.text());
+            }
+        } catch (err) {
+            console.error('Logout failed:', err);
+        }
+    }
+
     if (route === 'login' || route === 'register' || route === 'verify-email' || route === 'password-reset') {
         return (
             <nav className="bb b--light-gray bg-white pa2 fixed top-0 left-0 w-100 z-5" style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -90,7 +109,7 @@ function Navigation({ onRouteChange, isSignedIn, route, userId }) {
                                 <span>Create</span>
                             </div>
                         </button>
-                        <p className="f3 link dim black underline pa3 pointer ma0" onClick={() => onRouteChange('logout')}>Log Out</p>
+                        <p className="f3 link dim black underline pa3 pointer ma0" onClick={logout}>Log Out</p>
                         <img
                             className="br-100 shadow-1 ml3 mr3 pointer"
                             src={avatar}

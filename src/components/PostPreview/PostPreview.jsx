@@ -71,9 +71,14 @@ function PostPreview({ post, onOpen, onRouteChange }) {
             style={{
                 margin: '0 2rem',
                 padding: '1rem 1rem',
-                borderBottom: '1px solid #ddd'
+                borderBottom: '1px solid #ddd',
+                position: 'relative'
             }}
         >
+            {post.status === 'inactive' && (
+                <div className="post-status-badge">Inactive</div>
+            )}
+
             <div className="post-header pointer">
                 <img src={avatar} alt={username} className="post-avatar" onClick={() => onRouteChange(`profile/${post.author_id}`)} style={{ cursor: 'pointer' }} />
                 <div className="post-meta">

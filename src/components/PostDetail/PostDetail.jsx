@@ -49,7 +49,10 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
                 dislikes_count,
                 rating,
             };
-                
+
+            // console.log(fullPost);
+            
+            
             setPost(fullPost);
             setUserLikeType(userLikeType);
         } catch (err) {
