@@ -1,5 +1,6 @@
-.custom-hover:hover {
+.post-preview:hover {
     background-color: #f6f8f9;
+    border-radius: 0%;
 }
 
 .post-list > * {
@@ -13,6 +14,10 @@
 }
 
 .user-post-list > *:first-child {
+    border-top: 1px solid #ddd;
+}
+
+.category-posts-list > *:first-child {
     border-top: 1px solid #ddd;
 }
 
@@ -35,7 +40,7 @@
     align-items: center;
 }
 
-.post-author {
+.post-author-preview {
     margin-left: 0.5rem;
 }
 

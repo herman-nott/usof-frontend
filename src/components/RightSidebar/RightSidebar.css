@@ -1,0 +1,97 @@
+.right-sidebar {
+    padding: 5rem 1rem 1rem;
+}
+
+.sidebar-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); */
+}
+
+.hashtag {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    /* font-size: 0.9rem; */
+    letter-spacing: 0.05em;
+}
+
+.top-posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.top-post {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border-left: 5px solid transparent;
+}
+
+.top-post:nth-child(1):hover {
+    background: linear-gradient(180deg, #fffbe6, #fff1b8);
+    border-left-color: #FFD700; /* золото */
+    transform: translateY(-4px);
+}
+.top-post:nth-child(2):hover {
+    background: linear-gradient(180deg, #f9f9f9, #e0e0e0);
+    border-left-color: #C0C0C0; /* серебро */
+    transform: translateY(-4px);
+}
+.top-post:nth-child(3):hover {
+    background: linear-gradient(180deg, #fff3e0, #ffcc80);
+    border-left-color: #CD7F32; /* бронза */
+    transform: translateY(-4px);
+}
+
+.top-post::before {
+    content: attr(data-rank);
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.top-post:nth-child(1)::before {
+    background: linear-gradient(145deg, #FFD700, #FFC107);
+}
+.top-post:nth-child(2)::before {
+    background: linear-gradient(145deg, #C0C0C0, #b0b0b0);
+}
+.top-post:nth-child(3)::before {
+    background: linear-gradient(145deg, #CD7F32, #b87333);
+}
+
+.post-title-rightsidebar {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #222;
+    margin-bottom: 0.3rem;
+}
+
+.post-author-rightsidebar {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 0.2rem 0;
+}
+
+.post-rating-rightsidebar {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #ff9800;
+}

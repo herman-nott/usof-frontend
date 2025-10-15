@@ -1,5 +1,4 @@
 import './LeftSidebar.css'
-import CategoriesDropdown from "../CategoriesDropdown/CategoriesDropdown"
 
 function LeftSidebar({ onRouteChange }) {
     return (

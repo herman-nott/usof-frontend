@@ -17,6 +17,9 @@ import CreatePost from './components/CreatePost/CreatePost'
 
 import Profile from './components/Profile/Profile'
 
+import AllCategories from './components/AllCategories/AllCategories'
+import CategoryPosts from './components/CategoryPosts/CategoryPosts'
+
 import './App.css'
 
 function App() {
@@ -69,16 +72,20 @@ function App() {
     'verify-email': <VerifyEmail onRouteChange={onRouteChange} />, 
     'password-reset': <PasswordReset token={passwordResetToken} />,
     'create-post': <CreatePost onRouteChange={onRouteChange} userId={userId} />,
-    'profile': <Profile userId={routeUserId} currentUserId={userId} onRouteChange={onRouteChange} />
+    'profile': <Profile userId={routeUserId} currentUserId={userId} onRouteChange={onRouteChange} />,
+    'all-categories': <AllCategories onRouteChange={onRouteChange} />
   };
 
   let mainContent;
-  if (route.startsWith('post:')) {
+  if (route.startsWith('post:')) {    
     const postId = route.split(':')[1];
     mainContent = <PostDetail postId={postId} onRouteChange={onRouteChange} isSignedIn={isSignedIn} userId={userId} />;
   } else if (route.startsWith('profile/')) {
     const routeUserId = route.split('/')[1];
     mainContent = <Profile userId={routeUserId} currentUserId={userId} onRouteChange={onRouteChange} />
+  } else if (route.startsWith('category:')) {
+    const categoryId = route.split(':')[1];    
+    mainContent = <CategoryPosts categoryId={categoryId} onRouteChange={onRouteChange} />;
   } else {
     mainContent = routes[route] || routes.home;
   }

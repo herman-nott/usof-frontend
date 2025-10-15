@@ -77,7 +77,7 @@ function PostPreview({ post, onOpen, onRouteChange }) {
             <div className="post-header pointer">
                 <img src={avatar} alt={username} className="post-avatar" onClick={() => onRouteChange(`profile/${post.author_id}`)} style={{ cursor: 'pointer' }} />
                 <div className="post-meta">
-                    <span className="post-author" onClick={() => onRouteChange(`profile/${post.author_id}`)} style={{ cursor: 'pointer' }}>{username}</span>
+                    <span className="post-author-preview" onClick={() => onRouteChange(`profile/${post.author_id}`)} style={{ cursor: 'pointer' }}>{username}</span>
                     <span className="middle-dot">&#8226;</span>
                     <span className="post-time">{createdAt}</span>
                 </div>
@@ -94,7 +94,11 @@ function PostPreview({ post, onOpen, onRouteChange }) {
 
             <div style={{ marginTop: '.5rem', marginBottom: '.5rem', display: 'flex', gap: '.5rem', alignItems: 'center' }}>
                 {(post.categories && post.categories.length > 0 ? post.categories : [{ title: 'no-category', id: 'none' }]).map(cat => (
-                    <span key={cat.id} style={{ fontSize: '.8rem', padding: '.2rem .5rem', border: '1px solid #ddd', borderRadius: '12px' }}>
+                    <span 
+                        key={cat.id} 
+                        style={{ fontSize: '.8rem', padding: '.2rem .5rem', border: '1px solid #ddd', borderRadius: '12px' }}
+                        onClick={() => onRouteChange(`category:${cat.id}`)}
+                    >
                         {cat.title}
                     </span>
                 ))}

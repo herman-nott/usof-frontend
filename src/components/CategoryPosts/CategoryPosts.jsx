@@ -1,0 +1,131 @@
+import { useEffect, useState } from "react";
+import PostPreview from "../PostPreview/PostPreview";
+import "./CategoryPosts.css";
+
+function CategoryPosts({ categoryId, onRouteChange }) {
+    const [posts, setPosts] = useState([]);
+    const [category, setCategory] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        async function loadData() {
+            try {
+                setLoading(true);
+                const catRes = await fetch(`${import.meta.env.VITE_API_URL}/categories/${categoryId}`);
+                if (!catRes.ok) throw new Error("Failed to load category");
+                const catData = await catRes.json();
+                setCategory(catData || catData);
+
+                const postsRes = await fetch(`${import.meta.env.VITE_API_URL}/categories/${categoryId}/posts`);
+                if (!postsRes.ok) throw new Error("Failed to load posts");
+                const postsData = await postsRes.json();
+                setPosts(postsData || []);
+                // console.log(postsData);
+                
+            } catch (err) {
+                console.error(err);
+                setError("Error loading category posts");
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        loadData();
+    }, [categoryId]);
+
+    function openPost(id) {
+        window.history.pushState({}, '', `/posts/${id}`);
+        onRouteChange(`post:${id}`);
+    }
+
+    if (loading) {
+        return (
+            <div 
+                className="all-categories-container bg-white"
+                style={{
+                    paddingTop: '6rem',
+                    paddingBottom: '2rem',
+                    marginLeft: '20%',
+                    marginRight: '25%',
+                    minHeight: '100vh',
+                    overflowY: 'auto',
+                }}
+            >
+                <p className="loading">Loading posts...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div 
+                className="all-categories-container bg-white"
+                style={{
+                    paddingTop: '6rem',
+                    paddingBottom: '2rem',
+                    marginLeft: '20%',
+                    marginRight: '25%',
+                    minHeight: '100vh',
+                    overflowY: 'auto',
+                }}
+            >
+                <p className="error">{error}</p>
+            </div>
+        );
+    }
+
+    return (
+        <div 
+            className="category-posts-container bg-white"
+            style={{
+                paddingTop: '6rem',
+                paddingBottom: '2rem',
+                marginLeft: '20%',
+                marginRight: '25%',
+                minHeight: '100vh',
+                overflowY: 'auto',
+            }}
+        >
+            <div 
+                className="pointer flex items-center justify-center"
+                style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    backgroundColor: '#f0f0f0',
+                    transition: 'background 0.2s',
+                    marginRight: '1.5rem',
+                    marginLeft: '1.5rem'
+                }}
+                onClick={() => { 
+                    window.history.pushState({}, '', '/'); 
+                    onRouteChange('all-categories'); 
+                }}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = '#e0e0e0'}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+            >
+                <i className="fa-solid fa-arrow-left"></i>
+            </div>
+            
+            <h2 className="category-title tl">
+                {category ? `#${category.title}` : "Category"}
+            </h2>
+            <p className="category-description tl">
+                {category?.description || "No description available."}
+            </p>
+
+            <div className="category-posts-list">
+                {posts.length > 0 ? (
+                    posts.map((post) => (
+                        <PostPreview key={post.id} post={post} onOpen={openPost} onRouteChange={onRouteChange} />
+                    ))
+                ) : (
+                    <p>No posts in this category yet.</p>
+                )}
+            </div>
+        </div>
+  );
+}
+
+export default CategoryPosts;
