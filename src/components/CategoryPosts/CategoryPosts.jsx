@@ -17,12 +17,46 @@ function CategoryPosts({ categoryId, onRouteChange }) {
                 const catData = await catRes.json();
                 setCategory(catData || catData);
 
-                const postsRes = await fetch(`${import.meta.env.VITE_API_URL}/categories/${categoryId}/posts`);
-                if (!postsRes.ok) throw new Error("Failed to load posts");
-                const postsData = await postsRes.json();
-                setPosts(postsData || []);
+                // const postsRes = await fetch(`${import.meta.env.VITE_API_URL}/categories/${categoryId}/posts`);
+                // if (!postsRes.ok) throw new Error("Failed to load posts");
+                // const postsData = await postsRes.json();
+                // setPosts(postsData || []);
                 // console.log(postsData);
+
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/posts`, {
+                    credentials: 'include',
+                });
+                if (!res.ok) throw new Error('Error loading posts: ' + res.status);
+                const data = await res.json();                
+
+                const items = Array.isArray(data) ? data : (data.posts || []);
+
+                const postsWithCategories = await Promise.all(items.map(async post => {
+                    const catRes = await fetch(`${import.meta.env.VITE_API_URL}/posts/${post.id}/categories`, {
+                        credentials: 'include',
+                    });
+                    const catData = await catRes.json();
+
+                    const comRes = await fetch(`${import.meta.env.VITE_API_URL}/posts/${post.id}/comments`, {
+                        credentials: 'include',
+                    });
+                    const comData = await comRes.json();
+
+                    const commentsCount = Array.isArray(comData) ? comData.length : (comData.comments?.length || 0);
                 
+                    return {
+                        ...post,
+                        categories: catData.categories || [],
+                        commentsCount
+                    };
+                }));
+                
+                // setPosts(postsWithCategories);
+                const filteredPosts = postsWithCategories.filter(post =>
+                    post.categories.some(cat => cat.id === Number(categoryId))
+                );
+
+                setPosts(filteredPosts);
             } catch (err) {
                 console.error(err);
                 setError("Error loading category posts");

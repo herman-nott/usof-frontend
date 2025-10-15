@@ -17,7 +17,7 @@
     border-top: 1px solid #ddd;
 }
 
-.category-posts-list > *:first-child {
+.category-posts-list > *:first-child:not(p) {
     border-top: 1px solid #ddd;
 }
 

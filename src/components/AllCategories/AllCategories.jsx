@@ -19,8 +19,10 @@ function AllCategories({ onRouteChange }) {
                         try {
                             const postsRes = await fetch(`${import.meta.env.VITE_API_URL}/categories/${cat.id}/posts`);
                             const postsData = await postsRes.json();
+
+                            const activePosts = postsData.filter(post => post.status === 'active');
                             
-                            return { ...cat, post_count: postsData.length || 0 };
+                            return { ...cat, post_count: activePosts.length || 0 };
                         } catch {
                             return { ...cat, post_count: 0 };
                         }
