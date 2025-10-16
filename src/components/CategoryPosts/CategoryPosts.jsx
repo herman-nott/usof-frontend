@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PostPreview from "../PostPreview/PostPreview";
 import "./CategoryPosts.css";
 
-function CategoryPosts({ categoryId, onRouteChange }) {
+function CategoryPosts({ categoryId, onRouteChange, userId }) {
     const [posts, setPosts] = useState([]);
     const [category, setCategory] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -152,7 +152,7 @@ function CategoryPosts({ categoryId, onRouteChange }) {
             <div className="category-posts-list">
                 {posts.length > 0 ? (
                     posts.map((post) => (
-                        <PostPreview key={post.id} post={post} onOpen={openPost} onRouteChange={onRouteChange} />
+                        <PostPreview key={post.id} post={post} onOpen={openPost} onRouteChange={onRouteChange} userId={userId} />
                     ))
                 ) : (
                     <p>No posts in this category yet.</p>

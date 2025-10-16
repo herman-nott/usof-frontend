@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import './PostPreview.css'
 
-function PostPreview({ post, onOpen, onRouteChange }) {
+function PostPreview({ post, onOpen, onRouteChange, userId, fetchPosts }) {
     const [author, setAuthor] = useState(null);
+    const [showMenu, setShowMenu] = useState(false);
 
     function stripHtml(html) {
         if (!html) return '';
@@ -56,6 +57,28 @@ function PostPreview({ post, onOpen, onRouteChange }) {
         return new Date(timestamp).toLocaleDateString();
     }
 
+    async function handleDelete() {
+        const confirmDelete = window.confirm('Are you sure you want to delete this post?');
+        if (!confirmDelete) return;
+
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/posts/${post.id}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+            if (res.ok) {
+                alert('Post successfully deleted');
+                // onRouteChange('home');
+
+                await fetchPosts();
+            } else {
+                alert('Error when deleting post');
+            }
+        } catch (err) {
+            console.error('Delete error:', err);
+        }
+    }
+
     const createdAt = formatTime(post.created_at);
     const avatar = `http://localhost:3000/${author?.profile_picture}`;
     const username = `@${author?.login}`;
@@ -75,9 +98,79 @@ function PostPreview({ post, onOpen, onRouteChange }) {
                 position: 'relative'
             }}
         >
-            {post.status === 'inactive' && (
-                <div className="post-status-badge">Inactive</div>
-            )}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '1rem',
+                }}
+            >
+                {post.status === 'inactive' && (
+                    <div className="post-status-badge">Inactive</div>
+                )}
+
+                {userId === post.author_id && (
+                    <div style={{ position: 'relative' }}>
+                        <i
+                            className="fa-solid fa-ellipsis-vertical"
+                            style={{
+                                cursor: 'pointer',
+                                fontSize: '1.2rem',
+                                padding: '.3rem',
+                            }}
+                            onClick={() => setShowMenu(!showMenu)}
+                        ></i>
+
+                        {showMenu && (
+                            <div
+                                className="post-menu"
+                                style={{
+                                    position: 'absolute',
+                                    right: 0,
+                                    top: '1.5rem',
+                                    background: 'white',
+                                    border: '1px solid #ddd',
+                                    borderRadius: '6px',
+                                    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                                    zIndex: 100,
+                                    minWidth: '150px'
+                                }}
+                            >
+                                <div
+                                    className="menu-item"
+                                    onClick={() => onRouteChange(`editpost/${post.id}`)}
+                                    style={{
+                                        padding: '0.5rem 1rem',
+                                        cursor: 'pointer',
+                                        borderBottom: '1px solid #eee'
+                                    }}
+                                    onMouseEnter={e => e.currentTarget.style.background = '#f5f5f5'}
+                                    onMouseLeave={e => e.currentTarget.style.background = 'white'}
+                                >
+                                    <i className="fa-solid fa-pen" style={{ marginRight: '6px' }}></i> Edit
+                                </div>
+                                <div
+                                    className="menu-item"
+                                    onClick={handleDelete}
+                                    style={{
+                                        padding: '0.5rem 1rem',
+                                        cursor: 'pointer',
+                                        color: '#c00'
+                                    }}
+                                    onMouseEnter={e => e.currentTarget.style.background = '#fbeaea'}
+                                    onMouseLeave={e => e.currentTarget.style.background = 'white'}
+                                >
+                                    <i className="fa-solid fa-trash" style={{ marginRight: '6px' }}></i> Delete
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+            
 
             <div className="post-header pointer">
                 <img src={avatar} alt={username} className="post-avatar" onClick={() => onRouteChange(`profile/${post.author_id}`)} style={{ cursor: 'pointer' }} />

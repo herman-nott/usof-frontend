@@ -69,7 +69,7 @@ function App() {
   }
 
   const routes = { 
-    home: <Content onRouteChange={onRouteChange} isSignedIn={isSignedIn} />, 
+    home: <Content onRouteChange={onRouteChange} isSignedIn={isSignedIn} userId={userId} />, 
     login: <Login onRouteChange={onRouteChange} onLoginSuccess={onLoginSuccess} />, 
     register: <Register onRouteChange={onRouteChange} onLoginSuccess={onLoginSuccess} />, 
     'verify-email': <VerifyEmail onRouteChange={onRouteChange} />, 
@@ -88,7 +88,7 @@ function App() {
     mainContent = <Profile userId={routeUserId} currentUserId={userId} onRouteChange={onRouteChange} />
   } else if (route.startsWith('category:')) {
     const categoryId = route.split(':')[1];    
-    mainContent = <CategoryPosts categoryId={categoryId} onRouteChange={onRouteChange} />;
+    mainContent = <CategoryPosts categoryId={categoryId} onRouteChange={onRouteChange} userId={userId} />;
   } else {
     mainContent = routes[route] || routes.home;
   }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import PostPreview from '../PostPreview/PostPreview'
 
-function Content({ onRouteChange, isSignedIn }) {
+function Content({ onRouteChange, isSignedIn, userId }) {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -22,7 +22,9 @@ function Content({ onRouteChange, isSignedIn }) {
 
                 const items = Array.isArray(data) ? data : (data.posts || []);
 
-                const postsWithCategories = await Promise.all(items.map(async post => {
+                const activeItems = items.filter(post => post.status === 'active');
+
+                const postsWithCategories = await Promise.all(activeItems.map(async post => {
                     const catRes = await fetch(`${import.meta.env.VITE_API_URL}/posts/${post.id}/categories`, {
                         credentials: 'include',
                     });
@@ -55,6 +57,53 @@ function Content({ onRouteChange, isSignedIn }) {
         return () => { cancelled = true; }
     }, [isSignedIn]);    
 
+    async function fetchPosts() {
+        setLoading(true);
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/posts`, {
+                credentials: 'include',
+            });
+            if (!res.ok) throw new Error('Error loading posts: ' + res.status);
+            const data = await res.json();                
+
+            const items = Array.isArray(data) ? data : (data.posts || []);
+
+            const activeItems = items.filter(post => post.status === 'active');
+
+            const postsWithCategories = await Promise.all(activeItems.map(async post => {
+                const catRes = await fetch(`${import.meta.env.VITE_API_URL}/posts/${post.id}/categories`, {
+                    credentials: 'include',
+                });
+                const catData = await catRes.json();
+
+                const comRes = await fetch(`${import.meta.env.VITE_API_URL}/posts/${post.id}/comments`, {
+                    credentials: 'include',
+                });
+                const comData = await comRes.json();
+
+                const commentsCount = Array.isArray(comData) ? comData.length : (comData.comments?.length || 0);
+
+                return {
+                    ...post,
+                    categories: catData.categories || [],
+                    commentsCount
+                };                    
+            }));
+            
+            setPosts(postsWithCategories);
+            setTotalPages(data.totalPages)
+        
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchPosts();
+    }, [isSignedIn]);
+
     function openPost(id) {
         window.history.pushState({}, '', `/posts/${id}`);
         onRouteChange(`post:${id}`);
@@ -86,7 +135,7 @@ function Content({ onRouteChange, isSignedIn }) {
 
             <div className="post-list">
                 {visible.map(post => (
-                    <PostPreview key={post.id} post={post} onOpen={openPost} onRouteChange={onRouteChange} />
+                    <PostPreview key={post.id} post={post} onOpen={openPost} onRouteChange={onRouteChange} userId={userId} fetchPosts={fetchPosts} />
                 ))}
             </div>
 

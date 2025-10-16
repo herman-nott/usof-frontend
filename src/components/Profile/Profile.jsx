@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PostPreview from '../PostPreview/PostPreview'
 import "./Profile.css";
 
-function Profile({ userId, currentUserId, onRouteChange }) {
+function Profile({ userId, currentUserId, onRouteChange, isSignedIn }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,16 +13,13 @@ function Profile({ userId, currentUserId, onRouteChange }) {
     useEffect(() => {
         if (!userId) return;
 
-        const fetchProfileAndPosts = async () => {
+        async function fetchProfileAndPosts() {
             try {
                 const userRes = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}`, { credentials: "include" });
                 if (!userRes.ok) throw new Error("Error loading profile");
                 const userData = await userRes.json();
                 setUser(userData);
-                setLoading(false);
-
-                console.log(userData);
-                
+                setLoading(false);                
 
                 const postsRes = await fetch(`${import.meta.env.VITE_API_URL}/posts`, { credentials: "include" });
                 if (!postsRes.ok) throw new Error("Error loading posts");
@@ -49,9 +46,6 @@ function Profile({ userId, currentUserId, onRouteChange }) {
                 }));
 
                 setPosts(postsWithDetails);
-                
-                
-
             } catch (err) {
                 console.error(err);
                 setError(err.message);
@@ -62,6 +56,51 @@ function Profile({ userId, currentUserId, onRouteChange }) {
         fetchProfileAndPosts();
 
     }, [userId]);
+
+    async function fetchPosts() {
+        try {
+            const userRes = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}`, { credentials: "include" });
+            if (!userRes.ok) throw new Error("Error loading profile");
+            const userData = await userRes.json();
+            setUser(userData);
+            setLoading(false);                
+
+            const postsRes = await fetch(`${import.meta.env.VITE_API_URL}/posts`, { credentials: "include" });
+            if (!postsRes.ok) throw new Error("Error loading posts");
+            const postsData = await postsRes.json();
+
+            const userPosts = postsData.posts.filter(post => {
+                return (post.author_id) === Number(userId);
+            });
+
+            const postsWithDetails = await Promise.all(userPosts.map(async post => {
+                const catRes = await fetch(`${import.meta.env.VITE_API_URL}/posts/${post.id}/categories`);
+                const catData = await catRes.json();                    
+
+                const comRes = await fetch(`${import.meta.env.VITE_API_URL}/posts/${post.id}/comments`);
+                const comData = await comRes.json();
+
+                const commentsCount = Array.isArray(comData) ? comData.length : (comData.comments?.length || 0);
+
+                return {
+                    ...post,
+                    categories: catData.categories || [],
+                    commentsCount
+                };
+            }));
+
+            setPosts(postsWithDetails);
+        } catch (err) {
+            console.error(err);
+            setError(err.message);
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchPosts();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isSignedIn]);
 
     function openPost(id) {
         window.history.pushState({}, '', `/posts/${id}`);
@@ -304,7 +343,7 @@ function Profile({ userId, currentUserId, onRouteChange }) {
                 {posts.length > 0 ? (
                     posts.map(post => (
                         <div className="user-post-list">
-                            <PostPreview key={post.id} post={post} onOpen={openPost} />
+                            <PostPreview key={post.id} post={post} onOpen={openPost} userId={userId} fetchPosts={fetchPosts} />
                         </div>
                     ))
                 ) : (
