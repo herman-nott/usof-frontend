@@ -21,6 +21,10 @@
     border-top: 1px solid #ddd;
 }
 
+.search-posts-list > *:first-child:not(p) {
+    border-top: 1px solid #ddd;
+}
+
 .post-preview {
     display: flex;
     flex-direction: column;

@@ -1,0 +1,99 @@
+.edit-profile-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 2.5rem 3rem;
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.alert {
+    text-align: center;
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+}
+.alert.error {
+    background-color: #ffe4e4;
+    color: #b00000;
+}
+.alert.success {
+    background-color: #e0ffeb;
+    color: #0a8f40;
+}
+
+.edit-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.avatar-section {
+    display: flex;
+    justify-content: center;
+    /* margin-bottom: 1rem; */
+}
+
+.avatar-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar-preview {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ccc;
+    transition: opacity 0.3s;
+}
+
+.avatar-wrapper:hover .avatar-preview {
+    opacity: 0.8;
+}
+
+.edit-icon {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background-color: #000000cc;
+    color: white;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    cursor: pointer;
+}
+
+.avatar-wrapper:hover .edit-icon {
+    opacity: 1;
+}
+
+.edit-icon i {
+    font-size: 16px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+.save-btn, .cancel-btn {
+    flex: 1;
+    /* padding: 0.8rem; */
+}
+
+.save-btn {
+    margin-right: 2rem;
+}

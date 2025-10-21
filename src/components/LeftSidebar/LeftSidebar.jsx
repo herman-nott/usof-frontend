@@ -1,6 +1,29 @@
+import { useEffect, useState } from 'react'
 import './LeftSidebar.css'
+import AdminFeatures from '../AdminFeatures/AdminFeatures'
 
-function LeftSidebar({ onRouteChange }) {
+function LeftSidebar({ onRouteChange, userId }) {
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        if (!userId) return;
+        let cancelled = false;
+
+        async function loadUser() {
+            try {
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}`);
+                if (!res.ok) throw new Error('Error loading author');
+                const data = await res.json();
+                if (!cancelled) setUser(data);
+            } catch (err) {
+                console.error('Error loading author:', err);
+            }
+        }
+
+        loadUser();
+        return () => { cancelled = true };
+    }, [userId]);
+
     return (
         <div 
             className="br b--light-gray bg-white w-20 vh-100 fixed left-0 top-0 overflow-auto" 
@@ -33,18 +56,18 @@ function LeftSidebar({ onRouteChange }) {
                     <i className="fa-solid fa-tags mr2"></i>
                     All Categories
                 </li>
-                <li 
+                {/* <li 
                     className="mb2 pointer custom-hover pa2 tl ml4 mr4" 
                     onClick={() => onRouteChange('popular-posts')}
                 >
                     <i className="fa-solid fa-fire mr2"></i>
                     Popular Posts
-                </li>
+                </li> */}
             </ul>
 
             <hr className="w-90 center mt2 mb2" style={{ borderColor: '#ffffff' }} />
 
-            {/* <CategoriesDropdown categories={categories} /> */}
+            {user?.role === 'admin' && <AdminFeatures onRouteChange={onRouteChange} />}
         </div>
     );
 }

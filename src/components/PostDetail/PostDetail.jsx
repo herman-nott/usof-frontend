@@ -161,7 +161,7 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
 
     const createdAt = formatTime(post.created_at);
 
-    const avatar = `http://localhost:3000/${author?.profile_picture || 'default.png'}`;
+    const avatar = `http://localhost:3000/${author?.profile_picture || 'default.png'}?t=${Date.now()}`;
     const username = `@${author?.login}`;
 
     const likes = post.likes_count || 0;    

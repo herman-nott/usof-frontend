@@ -1,36 +1,75 @@
-import { useState, useEffect } from "react"
-import './CreatePost.css'
+import { useState, useEffect } from "react";
+import './EditPost.css';
 
-function CreatePost({ onRouteChange, userId }) {
+function EditPost({ postId, onRouteChange }) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [error, setError] = useState('');
     const [isActive, setIsActive] = useState(true);
-
+    const [error, setError] = useState('');
+    
     const [categories, setCategories] = useState([]);
     const [categoryInput, setCategoryInput] = useState('');
     const [suggestions, setSuggestions] = useState([]);
-    const [allcategories, setAllCategories] = useState([]);
+    const [allCategories, setAllCategories] = useState([]);
 
     useEffect(() => {
-        async function fetchCategories() {
+        async function loadData() {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/categories`, {
-                    credentials: 'include',
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    setAllCategories(data);
+                const [postRes, catsRes, postCatsRes] = await Promise.all([
+                    fetch(`${import.meta.env.VITE_API_URL}/posts/${postId}`, { credentials: 'include' }),
+                    fetch(`${import.meta.env.VITE_API_URL}/categories`, { credentials: 'include' }),
+                    fetch(`${import.meta.env.VITE_API_URL}/posts/${postId}/categories`, { credentials: 'include' })
+                ]);
+                const postData = await postRes.json();
+                const allCats = await catsRes.json();
+                const postCats = await postCatsRes.json();  
+                
+                console.log(postCats);
+                
+
+                setTitle(postData.title);
+                setContent(postData.content);
+                setIsActive(postData.status === 'active');
+                setAllCategories(allCats);
+
+                if (Array.isArray(postCats.categories)) {
+                    setCategories(postCats.categories);
                 } else {
-                    console.error("Failed to fetch categories");
+                    setCategories([]);
                 }
             } catch (err) {
-                console.error("Error loading categories:", err);
+                console.error(err);
             }
         }
+        loadData();
+    }, [postId]);
 
-        fetchCategories();
-    }, []);
+    async function handleUpdate(e) {
+        e.preventDefault();
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/posts/${postId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({
+                    title,
+                    content,
+                    status: isActive ? 'active' : 'inactive',
+                    categories: categories.map(c => c.id)
+                })
+            });
+
+            if (res.ok) {
+                onRouteChange('home');
+            } else {
+                const data = await res.json();
+                setError(data.error || 'Error updating post');
+            }
+        } catch (err) {
+            console.error(err);
+            setError('Server error');
+        }
+    }
 
     function onTitleChange(event) {
         setTitle(event.target.value);
@@ -40,14 +79,14 @@ function CreatePost({ onRouteChange, userId }) {
         setContent(event.target.value);
     }
 
-    function handlecategoryInputChange(e) {
+    function handleCategoryInputChange(e) {
         const value = e.target.value;
         setCategoryInput(value);
 
         if (value.length > 0) {
-            const filtered = allcategories.filter(tag =>
-                tag.title.toLowerCase().includes(value.toLowerCase()) &&
-                !categories.includes(tag)
+            const filtered = allCategories.filter(cat =>
+                cat.title.toLowerCase().includes(value.toLowerCase()) &&
+                !categories.find(c => c.id === cat.id)
             );
             setSuggestions(filtered.slice(0, 5)); // максимум 5 подсказок
         } else {
@@ -66,33 +105,23 @@ function CreatePost({ onRouteChange, userId }) {
         setCategories(categories.filter(cat => cat.id !== catToRemove.id));
     }
 
-    async function handleSubmitPost(e) {
-        e.preventDefault();
+    async function handleToggleLock() {
+        const action = isActive ? 'lock' : 'unlock';
         try {
-            console.log(categories);
-            
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/posts`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/posts/${postId}/${action}`, {
+                method: 'PATCH',
                 credentials: 'include',
-                body: JSON.stringify({ 
-                    title, 
-                    content, 
-                    categories: categories.map(c => c.id), 
-                    user_id: userId,
-                    status: isActive ? 'active' : 'inactive'
-                })
             });
 
             if (res.ok) {
-                onRouteChange('home');
+                setIsActive(!isActive);
             } else {
                 const data = await res.json();
-                setError(data.error || 'Failed to create post');
+                alert(data.error || 'Failed to toggle post status');
             }
         } catch (err) {
             console.error(err);
-            setError('Network error');
+            alert('Server error');
         }
     }
 
@@ -115,7 +144,7 @@ function CreatePost({ onRouteChange, userId }) {
                     marginRight: '2rem'
                 }}
             >
-                <div className='create-post-container'>
+                <div className='edit-post-container'>
                     {/* Кнопка "назад" */}
                     <div 
                         className="pointer flex items-center justify-center"
@@ -138,13 +167,13 @@ function CreatePost({ onRouteChange, userId }) {
                     </div>
                 </div> 
 
-                <h2 style={{ marginTop: '2rem' }}>Create New Post</h2>
+                <h2>Edit Post</h2>
             </div>
-            
+
             {error && <p className="red">{error}</p>}
 
-            <div className="create-post-content">
-                <form onSubmit={handleSubmitPost}>
+            <div className="edit-post-content">
+                <form onSubmit={handleUpdate}>
                     <label className="db mb1 tl">
                         Title <span style={{ color: 'red' }}>*</span>
                     </label>
@@ -208,7 +237,7 @@ function CreatePost({ onRouteChange, userId }) {
                         <input
                             type="text"
                             value={categoryInput}
-                            onChange={handlecategoryInputChange}
+                            onChange={handleCategoryInputChange}
                             placeholder="Start typing to add categories..."
                             className="db w-100 pa2 mb2 outline-0"
                             style={{
@@ -260,7 +289,7 @@ function CreatePost({ onRouteChange, userId }) {
                         </label>
 
                         <div 
-                            onClick={() => setIsActive(!isActive)}
+                            onClick={handleToggleLock}
                             className="pointer"
                             style={{
                                 width: '50px',
@@ -290,13 +319,12 @@ function CreatePost({ onRouteChange, userId }) {
                         </span>
                     </div>
 
-
                     <div className="tl">
                         <button
                             className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
                             type="submit"
                         >        
-                            <span>Post</span>
+                            <span>Update Post</span>
                         </button>
                     </div>
                 </form>
@@ -305,4 +333,4 @@ function CreatePost({ onRouteChange, userId }) {
     );
 }
 
-export default CreatePost;
+export default EditPost;

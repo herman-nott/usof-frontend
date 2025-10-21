@@ -19,15 +19,18 @@ function Navigation({ onRouteChange, isSignedIn, route, userId }) {
     }, [isSignedIn, userId]);
 
     const avatar = user?.profile_picture
-        ? `http://localhost:3000/${user.profile_picture}`
-        : "http://localhost:3000/uploads/avatars/default.png";    
-
+        ? `http://localhost:3000/${user.profile_picture}?t=${Date.now()}`
+        : "http://localhost:3000/uploads/avatars/default.png";
+        
     function onSearchBarChange(event) {
         setSearchBar(event.target.value);
     }
 
-    function handleSearch() {
-        
+    function handleSearch(event) {
+        event.preventDefault();
+        if (!searchBar.trim()) return;
+
+        onRouteChange(`search?query=${encodeURIComponent(searchBar.trim())}`);
     }
 
     function onViewProfileSubmit() {
@@ -43,8 +46,6 @@ function Navigation({ onRouteChange, isSignedIn, route, userId }) {
 
             if (res.ok) {
                 onRouteChange('logout');
-                console.log('kajldskaljaksjd');
-                
             } else {
                 console.error('Error when logout:', await res.text());
             }

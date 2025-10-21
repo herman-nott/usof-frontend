@@ -80,7 +80,7 @@ function PostPreview({ post, onOpen, onRouteChange, userId, fetchPosts }) {
     }
 
     const createdAt = formatTime(post.created_at);
-    const avatar = `http://localhost:3000/${author?.profile_picture}`;
+    const avatar = `http://localhost:3000/${author?.profile_picture}?t=${Date.now()}`;
     const username = `@${author?.login}`;
 
     const likes = post.likes_count || 0;    

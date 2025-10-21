@@ -11,3 +11,12 @@
     min-height: 100vh;
     overflow-y: auto;
 }
+
+.role-admin {
+    color: #d9534f;
+    font-weight: bold;
+}
+
+.role-user {
+    color: #0275d8;
+}

@@ -1,14 +1,23 @@
 import { useEffect, useState } from "react";
 import "./AllCategories.css";
 
-function AllCategories({ onRouteChange }) {
+function AllCategories({ onRouteChange, isSignedIn, userId }) {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         async function fetchCategories() {
             try {
+                if (isSignedIn && userId) {
+                    const userRes = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}`, { credentials: "include" });
+                    if (userRes.ok) {
+                        const userData = await userRes.json();
+                        setUser(userData);
+                    }
+                }
+
                 const res = await fetch(`${import.meta.env.VITE_API_URL}/categories`);
                 if (!res.ok) throw new Error("Failed to fetch categories");
                 const data = await res.json();
@@ -29,7 +38,7 @@ function AllCategories({ onRouteChange }) {
                     })
                 );
 
-                setCategories(categoriesWithCounts);
+                setCategories(categoriesWithCounts);                
             } catch (err) {
                 console.error(err);
                 setError("Error loading categories");
@@ -38,7 +47,7 @@ function AllCategories({ onRouteChange }) {
             }
         }
         fetchCategories();
-    }, []);    
+    }, [isSignedIn, userId]);    
 
     if (loading) {
         return (
@@ -74,7 +83,7 @@ function AllCategories({ onRouteChange }) {
                 <p className="error">{error}</p>
             </div>
         );
-    }
+    }    
 
     return (
         <div 
@@ -88,7 +97,27 @@ function AllCategories({ onRouteChange }) {
                 overflowY: 'auto',
             }}
         >
-            <h2>All Categories</h2>
+            <div 
+                style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center', 
+                    marginBottom: '1rem' }}
+            >
+                <h2>All Categories</h2>
+                {isSignedIn && user?.role === 'admin' && (
+                    <button
+                        className="create-category-btn b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+                        onClick={() => onRouteChange('create-category')}
+                    >
+                        <div className="btn-container">
+                            <i className="create-post-plus fa-solid fa-plus"></i>
+                            <span>Create New Category</span>
+                        </div>
+                    </button>
+                )}
+            </div>
+
             <div className="categories-grid">
                 {categories.map((cat) => (
                     <div

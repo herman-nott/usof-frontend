@@ -1,0 +1,11 @@
+.edit-post-container {
+    margin-left: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.edit-post-content {
+    margin-right: 2rem;
+    margin-left: 5.1rem;
+}
+

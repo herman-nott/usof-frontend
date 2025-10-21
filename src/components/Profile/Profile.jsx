@@ -222,7 +222,7 @@ function Profile({ userId, currentUserId, onRouteChange, isSignedIn }) {
     }
 
     const avatar = user.profile_picture
-        ? `http://localhost:3000/${user.profile_picture}`
+        ? `http://localhost:3000/${user.profile_picture}?t=${Date.now()}`
         : "http://localhost:3000/uploads/avatars/default.png";
 
     return (
@@ -303,7 +303,7 @@ function Profile({ userId, currentUserId, onRouteChange, isSignedIn }) {
 
                                 <div className="flex flex-wrap justify-between">
                                     <div className="mb2 mr5">
-                                        <span className="b">Role:</span> {user.role || "user"}
+                                        <span className="b">Role:</span> <span className={user.role === "admin" ? "role-admin" : "role-user"}>{user.role || "user"}</span>
                                     </div>
                                     <div className="mb2">
                                         <span className="b">Rating:</span> {user.rating ?? 0}
@@ -317,6 +317,10 @@ function Profile({ userId, currentUserId, onRouteChange, isSignedIn }) {
                                 className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
                                 style={{
                                     marginTop: '1.6rem',
+                                }}
+                                onClick={() => {
+                                    window.history.pushState({}, '', `/edit-profile`);
+                                    onRouteChange(`edit-profile/${userId}`);
                                 }}
                             >
                                 Edit

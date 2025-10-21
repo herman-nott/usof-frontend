@@ -22,3 +22,7 @@
 .icon-transition.rotated {
     transform: rotate(180deg);
 }
+
+.admin-features {
+    margin-bottom: -0.5rem;
+}

@@ -1,24 +1,25 @@
 import { useState, useEffect } from 'react'
+
 import ParticleBackground from './components/ParticleBackground/ParticleBackground'
 import Login from './components/Login/Login'
 import Register from './components/Register/Register'
 import VerifyEmail from './components/VerifyEmail/VerifyEmail'
 import PasswordReset from './components/PasswordReset/PasswordReset'
-
 import Navigation from './components/Navigation/Navigation'
 import LeftSidebar from './components/LeftSidebar/LeftSidebar'
 import RightSidebar from './components/RightSidebar/RightSidebar'
 import Content from './components/Content/Content'
 import PostDetail from './components/PostDetail/PostDetail'
-
 import BodyClassController from './components/BodyClassController/BodyClassController'
-
 import CreatePost from './components/CreatePost/CreatePost'
-
 import Profile from './components/Profile/Profile'
-
 import AllCategories from './components/AllCategories/AllCategories'
 import CategoryPosts from './components/CategoryPosts/CategoryPosts'
+import EditPost from './components/EditPost/EditPost'
+import EditProfile from './components/EditProfile/EditProfile'
+import SearchResults from './components/SearchResults/SearchResults'
+import CreateCategory from './components/CreateCategory/CreateCategory'
+import AllUsers from './components/AllUsers/AllUsers'
 
 import './App.css'
 
@@ -29,6 +30,14 @@ function App() {
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
+    // const storedUserId = localStorage.getItem('userId');
+    // const storedSignedIn = localStorage.getItem('isSignedIn');
+
+    // if (storedUserId && storedSignedIn === 'true') {
+    //   setUserId(storedUserId);
+    //   setIsSignedIn(true);
+    // }
+
     const path = window.location.pathname;
     if (path.startsWith("/password-reset/")) {
       const token = path.split("/")[2];
@@ -45,13 +54,17 @@ function App() {
   function onLoginSuccess(userId) {
     setIsSignedIn(true);
     setUserId(userId);
+
+    // localStorage.setItem('userId', userId);
+    // localStorage.setItem('isSignedIn', 'true');
   }
 
   function onRouteChange(route) {
     if (route === 'logout') {
       setIsSignedIn(false);
       setUserId(null);
-      // Можно сбросить route на home и, например, обновить посты
+      // localStorage.removeItem('userId');
+      // localStorage.removeItem('isSignedIn');
       setRoute('home');
     }
     setRoute(route);
@@ -76,7 +89,9 @@ function App() {
     'password-reset': <PasswordReset token={passwordResetToken} />,
     'create-post': <CreatePost onRouteChange={onRouteChange} userId={userId} />,
     'profile': <Profile userId={routeUserId} currentUserId={userId} onRouteChange={onRouteChange} />,
-    'all-categories': <AllCategories onRouteChange={onRouteChange} />
+    'all-categories': <AllCategories onRouteChange={onRouteChange} isSignedIn={isSignedIn} userId={userId} />,
+    'create-category': <CreateCategory onRouteChange={onRouteChange} />,
+    'all-users': <AllUsers />
   };
 
   let mainContent;
@@ -89,6 +104,12 @@ function App() {
   } else if (route.startsWith('category:')) {
     const categoryId = route.split(':')[1];    
     mainContent = <CategoryPosts categoryId={categoryId} onRouteChange={onRouteChange} userId={userId} />;
+  } else if (route.startsWith('editpost/')) {
+    mainContent = <EditPost postId={route.split('/')[1]} onRouteChange={setRoute} />;
+  } else if (route.startsWith('edit-profile/')) {
+    mainContent = <EditProfile onRouteChange={onRouteChange} currentUserId={userId} />;
+  } else if (route.startsWith('search')) {
+    mainContent = <SearchResults route={route} onRouteChange={onRouteChange} userId={userId} />;
   } else {
     mainContent = routes[route] || routes.home;
   }
@@ -103,7 +124,7 @@ function App() {
       <div className="main-content" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
         {!authRoutes.includes(route) && (
           <>
-            <LeftSidebar onRouteChange={onRouteChange} />
+            <LeftSidebar onRouteChange={onRouteChange} userId={userId} />
             <RightSidebar onRouteChange={onRouteChange} />
           </>
         )}

@@ -1,0 +1,10 @@
+.create-category-container {
+    margin-left: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.create-category-content {
+    margin-right: 2rem;
+    margin-left: 5.1rem;
+}

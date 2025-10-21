@@ -1,8 +1,13 @@
 import { useState } from "react";
-import "./CategoriesDropdown.css";
+import "./AdminFeatures.css";
 
-function CategoriesDropdown({ categories }) {
+function AdminFeatures({ onRouteChange  }) {
     const [isOpen, setIsOpen] = useState(true);
+
+    const adminOptions = [
+        { label: "Admin Panel", route: "admin-panel", icon: "fa-wrench", action: () => window.open('http://localhost:3000/admin', '_blank') },
+        { label: "All Users", route: "all-users", icon: "fa-users" }
+    ];
 
     function toggleDropdown() {
         setIsOpen(!isOpen);
@@ -11,10 +16,10 @@ function CategoriesDropdown({ categories }) {
     return (
         <div>
             <div
-                className="mb2 pointer custom-hover pa2 tl ml4 mr4 flex justify-between items-center"
+                className="admin-features pointer custom-hover pa2 tl ml4 mr4 flex justify-between items-center"
                 onClick={toggleDropdown}
             >
-                <span>Categories</span>
+                <span>Admin Features</span>
                 <i
                     className={`ml3 fa-solid fa-chevron-down icon-transition ${
                         isOpen ? "rotated" : ""
@@ -24,12 +29,14 @@ function CategoriesDropdown({ categories }) {
 
             <div className={`dropdown-container ${isOpen ? "open" : ""}`}>
                 <ul style={{ listStyle: 'none', padding: 0 }}>
-                    {categories.map((cat, index) => (
+                    {adminOptions.map((item, index) => (
                         <li
                             key={index}
                             className="mb2 pointer custom-hover pa2 tl ml4 mr4"
+                            onClick={item.action ? item.action : () => onRouteChange(item.route)}
                         >
-                            {cat}
+                            <i className={`fa-solid ${item.icon} mr2`}></i>
+                            {item.label}
                         </li>
                     ))}
                 </ul>
@@ -38,4 +45,4 @@ function CategoriesDropdown({ categories }) {
     );
 }
 
-export default CategoriesDropdown;
+export default AdminFeatures;
