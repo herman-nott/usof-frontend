@@ -5,6 +5,8 @@ function CommentsSection({ postId, isSignedIn, onRouteChange, userId }) {
     const [loading, setLoading] = useState(false);
     const [commentText, setCommentText] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    // const [showMenu, setShowMenu] = useState(false);
+    const [showMenuId, setShowMenuId] = useState(null);
 
     useEffect(() => {
         loadComments();
@@ -120,6 +122,28 @@ function CommentsSection({ postId, isSignedIn, onRouteChange, userId }) {
         return new Date(timestamp).toLocaleDateString();
     }
 
+    async function handleDeleteComment(comment) {
+        const confirmDelete = window.confirm('Are you sure you want to delete this comment?');
+        if (!confirmDelete) return;
+
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/comments/${comment.id}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+            if (res.ok) {
+                alert('Comment successfully deleted');
+                // onRouteChange('home');
+
+                await loadComments();
+            } else {
+                alert('Error when deleting comment');
+            }
+        } catch (err) {
+            console.error('Delete error:', err);
+        }
+    }
+
     return (
         <div style={{ marginTop: '3rem' }}>
             <h3>Comments</h3>
@@ -164,8 +188,65 @@ function CommentsSection({ postId, isSignedIn, onRouteChange, userId }) {
                             padding: '1rem',
                             border: '1px solid #eee',
                             borderRadius: '10px',
-                            backgroundColor: '#fafafa'
+                            backgroundColor: '#fafafa',
+                            position: 'relative'
                         }}>
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    right: '10px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '1rem',
+                                }}
+                            >
+                                {userId === c.author_id && (
+                                    <div style={{ position: 'relative' }}>
+                                        <i
+                                            className="fa-solid fa-ellipsis-vertical"
+                                            style={{
+                                                cursor: 'pointer',
+                                                fontSize: '1.2rem',
+                                                padding: '.3rem',
+                                            }}
+                                            onClick={() => setShowMenuId(showMenuId === c.id ? null : c.id)}
+                                        ></i>
+
+                                        {showMenuId == c.id && (
+                                            <div
+                                                className="post-menu"
+                                                style={{
+                                                    position: 'absolute',
+                                                    right: 0,
+                                                    top: '1.5rem',
+                                                    background: 'white',
+                                                    border: '1px solid #ddd',
+                                                    borderRadius: '6px',
+                                                    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                                                    zIndex: 100,
+                                                    minWidth: '150px'
+                                                }}
+                                            >
+                                                <div
+                                                    className="menu-item"
+                                                    onClick={() => {handleDeleteComment(c)}}
+                                                    style={{
+                                                        padding: '0.5rem 1rem',
+                                                        cursor: 'pointer',
+                                                        color: '#c00'
+                                                    }}
+                                                    onMouseEnter={e => e.currentTarget.style.background = '#fbeaea'}
+                                                    onMouseLeave={e => e.currentTarget.style.background = 'white'}
+                                                >
+                                                    <i className="fa-solid fa-trash" style={{ marginRight: '6px' }}></i> Delete
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
                             <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
                                 <img src={avatar} width={40} height={40} style={{ borderRadius: '50%', cursor: 'pointer' }} onClick={() => onRouteChange(`profile/${c.author_id}`)} />
                                 <div>
