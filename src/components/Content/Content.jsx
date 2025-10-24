@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import PostPreview from '../PostPreview/PostPreview'
+import './Content.css'
 
 function Content({ onRouteChange, isSignedIn, userId }) {
     const [posts, setPosts] = useState([]);
@@ -9,12 +10,22 @@ function Content({ onRouteChange, isSignedIn, userId }) {
     const [totalPages, setTotalPages] = useState(0);
     const PAGE_SIZE = 10;
 
+    const [sort, setSort] = useState('date');
+    const [order, setOrder] = useState('desc');
+
     useEffect(() => {
         let cancelled = false;
         async function load() {
             setLoading(true);
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/posts`, {
+                const params = new URLSearchParams({
+                    sort,
+                    order,
+                });
+
+                console.log('Запрос:', `http://localhost:3000/api/posts?${params.toString()}`);
+
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/posts?${params.toString()}`, {
                     credentials: 'include',
                 });
                 if (!res.ok) throw new Error('Error loading posts: ' + res.status);
@@ -55,7 +66,7 @@ function Content({ onRouteChange, isSignedIn, userId }) {
         }
         load();
         return () => { cancelled = true; }
-    }, [isSignedIn]);    
+    }, [isSignedIn, order, sort]);        
 
     async function fetchPosts() {
         setLoading(true);
@@ -100,10 +111,6 @@ function Content({ onRouteChange, isSignedIn, userId }) {
         }
     }
 
-    useEffect(() => {
-        fetchPosts();
-    }, [isSignedIn]);
-
     function openPost(id) {
         window.history.pushState({}, '', `/posts/${id}`);
         onRouteChange(`post:${id}`);
@@ -132,6 +139,41 @@ function Content({ onRouteChange, isSignedIn, userId }) {
             {error && <p style={{ color: 'red' }}>{error}</p>}
 
             {!loading && !error && visible.length === 0 && <p>There are no posts</p>}
+
+            <div 
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '1rem',
+                    padding: '0 1rem',
+                    borderBottom: '1px solid #eee',
+                    paddingBottom: '0.5rem',
+                }}
+            >
+                {/* Сортировка */}
+                <div>
+                    <label style={{ marginRight: '0.5rem' }}>Sort by:</label>
+                    <select
+                        value={sort}
+                        onChange={(e) => setSort(e.target.value)}
+                        style={{ padding: '0.3rem', borderRadius: '4px' }}
+                    >
+                        <option value="date">Date</option>
+                        <option value="rating">Rating</option>
+                        <option value="likes_count">Likes</option>
+                    </select>
+
+                    <select
+                        value={order}
+                        onChange={(e) => setOrder(e.target.value)}
+                        style={{ padding: '0.3rem', marginLeft: '0.5rem', borderRadius: '4px' }}
+                    >
+                        <option value="desc">Descending</option>
+                        <option value="asc">Ascending</option>
+                    </select>
+                </div>
+            </div>
 
             <div className="post-list">
                 {visible.map(post => (

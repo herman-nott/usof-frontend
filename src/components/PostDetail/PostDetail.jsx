@@ -94,7 +94,6 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
 
         try {
             if (userLikeType === type) {
-                // Пользователь уже поставил этот тип лайка → удаляем
                 const res = await fetch(`${import.meta.env.VITE_API_URL}/posts/${postId}/like`, {
                     method: 'DELETE',
                     credentials: 'include',
@@ -104,7 +103,6 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
                 if (!res.ok) throw new Error('Error when deleting a like');
                 setUserLikeType(null);
             } else {
-                // Пользователь ставит новый лайк/дизлайк
                 const res = await fetch(`${import.meta.env.VITE_API_URL}/posts/${postId}/like`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -115,7 +113,6 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
                 setUserLikeType(type);
             }
 
-            // Обновляем данные поста (лайки/дизлайки)
             const likeRes = await fetch(`${import.meta.env.VITE_API_URL}/posts/${postId}/like`);
             const likeData = await likeRes.json();
             const likesArr = likeData.likes || [];

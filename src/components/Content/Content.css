@@ -1,0 +1,15 @@
+select {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+select:hover {
+    background-color: #f8f8f8;
+}
+
+label {
+    font-weight: 500;
+    color: #333;
+}
