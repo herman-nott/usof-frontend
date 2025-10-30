@@ -44,6 +44,16 @@ function PostPreview({ post, onOpen, onRouteChange, userId, fetchPosts }) {
         return () => { cancelled = true };
     }, [post.author_id]);
 
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+        if (!e.target.closest('.post-menu') && !e.target.closest('.fa-ellipsis-vertical')) {
+            setShowMenu(false);
+        }
+        };
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
+
     function formatTime(timestamp) {
         const diff = Date.now() - new Date(timestamp).getTime();
         const seconds = Math.floor(diff / 1000);

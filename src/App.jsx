@@ -91,7 +91,7 @@ function App() {
     'profile': <Profile userId={routeUserId} currentUserId={userId} onRouteChange={onRouteChange} />,
     'all-categories': <AllCategories onRouteChange={onRouteChange} isSignedIn={isSignedIn} userId={userId} />,
     'create-category': <CreateCategory onRouteChange={onRouteChange} />,
-    'all-users': <AllUsers />
+    'all-users': <AllUsers onRouteChange={onRouteChange} />
   };
 
   let mainContent;

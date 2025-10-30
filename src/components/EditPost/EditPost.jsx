@@ -22,10 +22,7 @@ function EditPost({ postId, onRouteChange }) {
                 ]);
                 const postData = await postRes.json();
                 const allCats = await catsRes.json();
-                const postCats = await postCatsRes.json();  
-                
-                console.log(postCats);
-                
+                const postCats = await postCatsRes.json();                  
 
                 setTitle(postData.title);
                 setContent(postData.content);

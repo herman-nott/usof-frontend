@@ -347,7 +347,7 @@ function Profile({ userId, currentUserId, onRouteChange, isSignedIn }) {
                 {posts.length > 0 ? (
                     posts.map(post => (
                         <div className="user-post-list">
-                            <PostPreview key={post.id} post={post} onOpen={openPost} userId={userId} fetchPosts={fetchPosts} />
+                            <PostPreview key={post.id} post={post} onOpen={openPost} userId={userId} fetchPosts={fetchPosts} onRouteChange={onRouteChange} />
                         </div>
                     ))
                 ) : (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./AllUsers.css";
 
-function AllUsers() {
+function AllUsers({ onRouteChange }) {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -88,7 +88,7 @@ function AllUsers() {
                     </thead>
                     <tbody>
                         {users.map(user => (
-                            <tr key={user.id}>
+                            <tr className="pointer" key={user.id} onClick={() => onRouteChange(`profile/${user.id}`)}>
                                 <td>{user.id}</td>
                                 <td>{user.login || "—"}</td>
                                 <td>{user.email || "—"}</td>

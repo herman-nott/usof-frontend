@@ -8,7 +8,7 @@ function Content({ onRouteChange, isSignedIn, userId }) {
     const [error, setError] = useState(null);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
-    const PAGE_SIZE = 10;
+    const PAGE_SIZE = 5;
 
     const [sort, setSort] = useState('date');
     const [order, setOrder] = useState('desc');
@@ -21,9 +21,9 @@ function Content({ onRouteChange, isSignedIn, userId }) {
                 const params = new URLSearchParams({
                     sort,
                     order,
+                    page,
+                    limit: PAGE_SIZE,
                 });
-
-                console.log('Запрос:', `http://localhost:3000/api/posts?${params.toString()}`);
 
                 const res = await fetch(`${import.meta.env.VITE_API_URL}/posts?${params.toString()}`, {
                     credentials: 'include',
@@ -66,7 +66,7 @@ function Content({ onRouteChange, isSignedIn, userId }) {
         }
         load();
         return () => { cancelled = true; }
-    }, [isSignedIn, order, sort]);        
+    }, [isSignedIn, order, sort, page]);        
 
     async function fetchPosts() {
         setLoading(true);

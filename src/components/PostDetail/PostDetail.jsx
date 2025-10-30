@@ -236,7 +236,7 @@ function PostDetail({ postId, onRouteChange, isSignedIn, userId }) {
 
                 <div className='categories' style={{ marginTop: '1rem', marginBottom: '1rem', display: 'flex', gap: '.5rem', alignItems: 'center' }}>
                     {(post.categories && post.categories.length > 0 ? post.categories : [{ title: 'no-category', id: 'none' }]).map(cat => (
-                        <span key={cat.id} style={{ fontSize: '.8rem', padding: '.2rem .5rem', border: '1px solid #ddd', borderRadius: '12px' }}>
+                        <span key={cat.id} style={{ cursor: 'pointer', fontSize: '.8rem', padding: '.2rem .5rem', border: '1px solid #ddd', borderRadius: '12px' }} onClick={() => onRouteChange(`category:${cat.id}`)}>
                             {cat.title}
                         </span>
                     ))}

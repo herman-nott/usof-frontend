@@ -69,8 +69,6 @@ function CreatePost({ onRouteChange, userId }) {
     async function handleSubmitPost(e) {
         e.preventDefault();
         try {
-            console.log(categories);
-            
             const res = await fetch(`${import.meta.env.VITE_API_URL}/posts`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
